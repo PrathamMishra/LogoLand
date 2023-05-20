@@ -21,7 +21,7 @@ main {
     font-size: larger;
 }
 #code {
-    /* TODO: Fix the width height of text editor */
+    resize: none;
     height: 500px;
     flex: 1;
 }
