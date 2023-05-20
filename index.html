@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGO</title>
+    <link rel="stylesheet" href="./style/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Logo Dummy</h1>
+        <section id="errorBlock">
+            <h4 id="error">Error will show here.</h4>
+            <div id="hideErr"></div>
+        </section>
+    </header>
+    <!-- TODO: add documentation of supported commands. -->
+    <!-- TODO: Make website Responsive. -->
+    <!-- TODO: Update overall styling. -->
+    <!-- TODO: add support for login and auth via google. -->
+    <!-- TODO: add support for saving code & canvas image. -->
+    <!-- TODO: add support for posting code & canvas image. -->
+    <!-- TODO: add support for comments and likes. -->
+    <main>
+        <section id="left">
+            <!-- TODO: limit svg co-ordinates -->
+            <div id="container"></div>
+        </section>
+        <section id="right">
+            <!-- TODO: Implement a better selfmade code editor. -->
+            <textarea id="code" placeholder="Enter Code"></textarea>
+        </section>
+    </main>
+    <div id="fillingLoader">Filling the region...</div>
+    <button id="runBtn">run code</button>
+    <h2>
+        Supported Commands:
+    </h2>
+    <ol>
+        <li>
+            Canvas & Pointer commands:
+            <ul>
+                <li>home -> center turtle</li>
+                <li>cs -> clear screen</li> 
+                <li>pu -> pen up</li> 
+                <li>pd -> pen down</li> 
+                <li>ht -> hide turtle</li> 
+                <li>st -> show turtle</li> 
+                <li>fill -> fill region</li>
+            </ul>
+        </li>
+        <li>
+            Unary commands:
+            <ul>
+                <li>fd -> forward (eg: fd 10)</li>
+                <li>bk -> backward (eg: bk 10)</li> 
+                <li>rt -> turn right (eg: rt 90)</li> 
+                <li>lt -> turn left (eg: lt 90)</li> 
+                <li>seth -> set heading (eg: seth 45)</li> 
+                <li>setpencolor -> sets the pen color (eg: setpencolor "blue)</li> 
+                <li>setfillcolor -> sets the fill color (eg: setfillcolor "blue)</li>
+            </ul>
+        </li>
+        <li>
+            Binary commands:
+            <ul>
+                <li>repeat -> repeats a set of command several times (eg: repeat 4[fd 10 rt 90])</li>
+                <li>setxy -> sets the current position (setxy [0 0])</li> 
+                <li>arc -> creates an arc (eg: arc 180 100)</li> 
+            </ul>
+        </li>
+    </ol>
+    <script src="./js/index.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+#container {
+    border: 2px solid aqua;
+}
+main {
+    display: flex;
+}
+#left {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+#right {
+    flex:1;
+    display: flex;
+}
+#runBtn {
+    margin: 50px auto;
+    display: block;
+    height: 30px;
+    font-size: larger;
+}
+#code {
+    /* TODO: Fix the width height of text editor */
+    height: 500px;
+    flex: 1;
+}
+h4 {
+    text-align: center;
+    display: inline;
+    color: red;
+    flex: 7;
+}
+#errorBlock {
+    display: none;
+    position: relative;
+}
+#hideErr {
+    display: inline;
+    width: 50px;
+    height: 50px;
+    flex: 1;
+}
+#hideErr::before, #hideErr::after {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    left: 90%;
+}
+#hideErr::before{
+    transform: rotate(45deg);
+}
+#hideErr::after{
+    transform: rotate(135deg);
+}
+#pointer{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#fillingLoader{
+    text-align: center;
+    display: none;
+    font-size: larger;
+}
