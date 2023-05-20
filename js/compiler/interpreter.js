@@ -58,12 +58,18 @@ export function executeAst(ast, canvas, pointer) {
                         updateTurtlePosition();
                         break;
                     case "setpencolor":
-                        ctx.strokeStyle = command.value;
-                        // TODO : check for unsafe colors
+                        if (isValidColor(command.value)) {
+                            ctx.strokeStyle = command.value;
+                        } else {
+                            throw new Error("Error: Invalid color name.")
+                        }
                         break;
                     case "setfillcolor":
-                        ctx.fillStyle = command.value;
-                        // TODO : check for unsafe colors
+                        if (isValidColor(command.value)) {
+                            ctx.fillStyle = command.value;
+                        } else {
+                            throw new Error("Error: Invalid color name.")
+                        }
                         break;
                 }
             }
@@ -106,7 +112,6 @@ export function executeAst(ast, canvas, pointer) {
                         pointer.style.visibility = "visible";
                         break; 
                     case "fill":
-                        // floodFill();
                         floodFillWithWorker();
                         break; 
                 }
@@ -114,6 +119,14 @@ export function executeAst(ast, canvas, pointer) {
             statements.shift();
         }
     }
+}
+
+function isValidColor(strColor) {
+    var s = new Option().style;
+    s.color = strColor;
+  
+    // return 'false' if color wasn't assigned
+    return s.color == strColor.toLowerCase();
 }
 
 // Move this inside a canvas handler class
