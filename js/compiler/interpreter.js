@@ -94,8 +94,8 @@ export function executeAst(ast, canvas, pointer) {
                 // TODO: IMPLEMENT random.
             } else if (command.type === COMMAND_TYPES.CANVAS_COMMAND) {
                 switch (command.command) {
-                    case CANVAS_COMMANDS.CENTER_TURTLE:
-                        centerTurtle();
+                    case CANVAS_COMMANDS.CENTER_POINTER:
+                        centerPointer();
                         break;
                     case CANVAS_COMMANDS.CLEAR_SCREEN:
                         clearScreen();
@@ -150,7 +150,7 @@ function backward(value) {
     updatePointerPosition();
 }
 
-function centerTurtle() {
+function centerPointer() {
     pointerData.x = pointerData.defaultX;
     pointerData.y = pointerData.defaultY;
     ctx.moveTo(pointerData.x, pointerData.y);
@@ -159,7 +159,7 @@ function centerTurtle() {
 }
 
 function clearScreen() {
-    centerTurtle();
+    centerPointer();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 

@@ -37,7 +37,7 @@ export const BINARY_COMMANDS = {
 };
 
 export const CANVAS_COMMANDS = {
-    CENTER_TURTLE: "home",
+    CENTER_POINTER: "home",
     CLEAR_SCREEN: "cs",
     PEN_DOWN: "pd",
     PEN_UP: "pu",
