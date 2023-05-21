@@ -3,16 +3,16 @@ import { produceAst } from "./parser.js";
 import { executeAst } from "./interpreter.js";
 
 export default class LogoInterpreter {
-    constructor(container, pointerLink = "") {
+    constructor(container, canvasData = {width: 1000, height: 500}, pointerData = {pointerLink: "", width: 15, height: 15}) {
         // TODO: move this logic and its styling inside a shadowDOM.
         if (!container)
             throw new Error(
                 "Please provide a canvas to initialize interpreter"
             );
         let canvasHtml, pointerHtml;
-        canvasHtml = `<canvas id="cnv" width="1000" height="500"></canvas>`;
-        if (pointerLink) {
-            pointerHtml = `<img src=${pointerLink} id="pointer" width="15px" height="15px" alt="pointer"/>`;
+        canvasHtml = `<canvas id="cnv" width="${canvasData.width}" height="${canvasData.height}"></canvas>`;
+        if (pointerData.pointerLink) {
+            pointerHtml = `<img src=${pointerData.pointerLink} id="pointer" width="${pointerData.width}px" height="${pointerData.height}px" alt="pointer"/>`;
         } else {
             pointerHtml = `<svg id="pointer" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15px" height="15px" viewBox="0 0 100 200">
                 <polygon points="50 15, 100 100, 0 100"></polygon>
