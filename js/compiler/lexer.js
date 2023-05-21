@@ -1,3 +1,5 @@
+import { TOKEN_TYPES } from "./constants";
+
 export function tokenize(text) {
     const str = text.split(""),
         tokens = [];
@@ -14,7 +16,7 @@ export function tokenize(text) {
             if (str[0] === ".") {
                 throw new Error("Error: Decimals are not supported.");
             }
-            tokens.push({ type: "number", value: Number(num) });
+            tokens.push({ type: TOKEN_TYPES.NUMBER, value: Number(num) });
         } else if (isChar(str[0])) {
             let token = "";
             while (str.length && isChar(str[0])) {
@@ -22,12 +24,12 @@ export function tokenize(text) {
                 str.shift();
             }
             if (isReserved(token)) {
-                tokens.push({ type: "keyword", value: token });
+                tokens.push({ type: TOKEN_TYPES.KEYWORD, value: token });
             } else {
-                tokens.push({ type: "identifier", value: token });
+                tokens.push({ type: TOKEN_TYPES.IDENTIFIER, value: token });
             }
         } else if (isBracs(str[0])) {
-            tokens.push({ type: "braces", value: str[0] });
+            tokens.push({ type: TOKEN_TYPES.BRACKETS, value: str[0] });
             str.shift();
         } else if (str[0] === '"') {
             str.shift();
@@ -37,14 +39,14 @@ export function tokenize(text) {
                 str.shift();
             }
             tokens.push({
-                type: "string",
+                type: TOKEN_TYPES.STRING,
                 value: token,
             });
         } else {
             throw new Error(`Unidentified character ${str[0]}`);
         }
     }
-    tokens.push({ type: "EOF" });
+    tokens.push({ type: TOKEN_TYPES.END_OF_FILE });
     return tokens;
 }
 

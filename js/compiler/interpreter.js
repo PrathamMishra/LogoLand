@@ -1,4 +1,5 @@
 import { showFillingLoader, hideFillingLoader } from "../index.js";
+import { BINARY_COMMANDS, CANVAS_COMMANDS, COMMAND_TYPES, UNARY_COMMANDS } from "./constants.js";
 
 // setup worker.
 const worker = new Worker("/js/compiler/fillWorker.js");
@@ -32,44 +33,43 @@ export function executeAst(ast, canvas, pointer) {
         const statements = ast.body;
         while (statements.length) {
             const command = statements[0];
-            if (command.type === "UnaryCommand") {
+            if (command.type === COMMAND_TYPES.UNARY_COMMAND) {
                 switch (command.command) {
-                    case "fd":
+                    case UNARY_COMMANDS.FORWARD:
                         forward(command.value);
                         break;
-                    case "bk":
+                    case UNARY_COMMANDS.BACKWARD:
                         backward(command.value);
                         break;
-                    case "rt":
+                    case UNARY_COMMANDS.RIGHT_TURN:
                         setAngle(pointerData.angle - command.value);
                         break;
-                    case "lt":
+                    case UNARY_COMMANDS.LEFT_TURN:
                         setAngle(pointerData.angle + command.value);
                         break;
-                    case "seth":
-                    case "setheading":
+                    case UNARY_COMMANDS.SET_HEADING:
                         setAngle(pointerData.defaultAngle - command.value);
                         break;
-                    case "setx":
+                    case UNARY_COMMANDS.SET_X:
                         setPosition(
                             pointerData.defaultX + command.value,
                             pointerData.y
                         );
                         break;
-                    case "sety":
+                    case UNARY_COMMANDS.SET_Y:
                         setPosition(
                             pointerData.x,
                             pointerData.defaultY + command.value
                         );
                         break;
-                    case "setpencolor":
+                    case UNARY_COMMANDS.SET_PEN_COLOR:
                         if (isValidColor(command.value)) {
                             ctx.strokeStyle = command.value;
                         } else {
                             throw new Error("Error: Invalid color name.");
                         }
                         break;
-                    case "setfillcolor":
+                    case UNARY_COMMANDS.SET_FILL_COLOR:
                         if (isValidColor(command.value)) {
                             ctx.fillStyle = command.value;
                         } else {
@@ -77,42 +77,42 @@ export function executeAst(ast, canvas, pointer) {
                         }
                         break;
                 }
-            } else if (command.type === "BinaryCommand") {
-                if (command.command === "repeat") {
+            } else if (command.type === COMMAND_TYPES.BINARY_COMMAND) {
+                if (command.command === BINARY_COMMANDS.REPEAT) {
                     while (command.iterations--) {
                         const copy = JSON.parse(JSON.stringify(command));
                         executeAst(copy.subProg, canvas, pointer);
                     }
-                } else if (command.command === "setxy") {
+                } else if (command.command === BINARY_COMMANDS.SET_POSITION) {
                     setPosition(
                         pointerData.defaultX + command.x,
                         pointerData.defaultY - command.y
                     );
-                } else if (command.command === "arc") {
+                } else if (command.command === BINARY_COMMANDS.ARC) {
                     drawArc(command.angle, command.radius);
                 }
                 // TODO: IMPLEMENT random.
-            } else if (command.type === "CanvasCommand") {
+            } else if (command.type === COMMAND_TYPES.CANVAS_COMMAND) {
                 switch (command.command) {
-                    case "home":
+                    case CANVAS_COMMANDS.CENTER_TURTLE:
                         centerTurtle();
                         break;
-                    case "cs":
+                    case CANVAS_COMMANDS.CLEAR_SCREEN:
                         clearScreen();
                         break;
-                    case "pu":
+                    case CANVAS_COMMANDS.PEN_UP:
                         pointerData.pu = true;
                         break;
-                    case "pd":
+                    case CANVAS_COMMANDS.PEN_DOWN:
                         pointerData.pu = false;
                         break;
-                    case "ht":
+                    case CANVAS_COMMANDS.HIDE_POINTER:
                         pointer.style.visibility = "hidden";
                         break;
-                    case "st":
+                    case CANVAS_COMMANDS.SHOW_POINTER:
                         pointer.style.visibility = "visible";
                         break;
-                    case "fill":
+                    case CANVAS_COMMANDS.FILL_REGION:
                         floodFillWithWorker();
                         break;
                 }

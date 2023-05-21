@@ -1,31 +1,22 @@
-const UnaryKeywords = [
-        "rt",
-        "fd",
-        "bk",
-        "lt",
-        "seth",
-        "setheading",
-        "setpencolor",
-        "setfillcolor",
-        "setx",
-        "sety",
-    ],
-    CanvasCommands = ["home", "cs", "pd", "pu", "ht", "st", "fill"],
-    BinaryCommands = ["setxy", "repeat", "arc"];
+import { BINARY_COMMANDS, CANVAS_COMMANDS, COMMAND_TYPES, NODE_TYPES, TOKEN_TYPES, UNARY_COMMANDS } from "./constants";
+
+const UnaryKeywords = Object.values(UNARY_COMMANDS),
+    CanvasKeywords = Object.values(CANVAS_COMMANDS),
+    BinaryKeywords = Object.values(BINARY_COMMANDS);
 
 export function produceAst(tokens) {
     const prog = {
-        type: "program",
+        type: NODE_TYPES.PROGRAM,
         body: [], // Array of statements
     };
-    while (tokens[0].type !== "EOF") {
-        if (tokens[0].type === "keyword") {
-            if (BinaryCommands.includes(tokens[0].value)) {
-                if (tokens[0].value === "repeat") {
+    while (tokens[0].type !== TOKEN_TYPES.END_OF_FILE) {
+        if (tokens[0].type === TOKEN_TYPES.KEYWORD) {
+            if (BinaryKeywords.includes(tokens[0].value)) {
+                if (tokens[0].value === BINARY_COMMANDS.REPEAT) {
                     let iterations,
                         subProg = [];
                     tokens.shift();
-                    if (tokens[0].type !== "number") {
+                    if (tokens[0].type !== TOKEN_TYPES.NUMBER) {
                         throw new Error(
                             "Error: Repeat expects the number of iterations."
                         );
@@ -34,7 +25,7 @@ export function produceAst(tokens) {
                         tokens.shift();
                     }
                     if (
-                        tokens[0].type !== "braces" ||
+                        tokens[0].type !== TOKEN_TYPES.BRACKETS ||
                         tokens[0].value !== "["
                     ) {
                         throw new Error(
@@ -44,7 +35,7 @@ export function produceAst(tokens) {
                         tokens.shift();
                         // stack used to parse nested loops.
                         const st = ["["];
-                        while (tokens[0].type !== "EOF" && st.length) {
+                        while (tokens[0].type !== TOKEN_TYPES.END_OF_FILE && st.length) {
                             if (tokens[0].value === "[") st.push("[");
                             else if (tokens[0].value === "]") st.pop();
                             if (st.length) {
@@ -52,27 +43,27 @@ export function produceAst(tokens) {
                                 tokens.shift();
                             }
                         }
-                        if (tokens[0].type === "EOF") {
+                        if (tokens[0].type === TOKEN_TYPES.END_OF_FILE) {
                             throw new Error(
                                 "Error: UnExpected End of file, was expecting ']'."
                             );
                         } else {
                             tokens.shift();
                         }
-                        subProg.push({ type: "EOF" });
+                        subProg.push({ type: TOKEN_TYPES.END_OF_FILE });
                         subProg = produceAst(subProg);
                     }
                     prog.body.push({
-                        type: "BinaryCommand",
-                        command: "repeat",
+                        type: COMMAND_TYPES.BINARY_COMMAND,
+                        command: BINARY_COMMANDS.REPEAT,
                         iterations,
                         subProg,
                     });
-                } else if (tokens[0].value === "setxy") {
+                } else if (tokens[0].value === BINARY_COMMANDS.SET_POSITION) {
                     let x, y;
                     tokens.shift();
                     if (
-                        tokens[0].type !== "braces" ||
+                        tokens[0].type !== TOKEN_TYPES.BRACKETS ||
                         tokens[0].value !== "["
                     ) {
                         throw new Error(
@@ -81,8 +72,8 @@ export function produceAst(tokens) {
                     } else {
                         tokens.shift();
                         if (
-                            tokens[0].type !== "number" ||
-                            tokens[1].type !== "number"
+                            tokens[0].type !== TOKEN_TYPES.NUMBER ||
+                            tokens[1].type !== TOKEN_TYPES.NUMBER
                         ) {
                             throw new Error(
                                 "Error: setxy expects two numbers for x and y inside braces."
@@ -92,7 +83,7 @@ export function produceAst(tokens) {
                             y = tokens[1].value;
                             tokens.splice(0, 2);
                             if (
-                                tokens[0].type !== "braces" ||
+                                tokens[0].type !== TOKEN_TYPES.BRACKETS ||
                                 tokens[0].value !== "]"
                             ) {
                                 throw new Error(
@@ -104,17 +95,17 @@ export function produceAst(tokens) {
                         }
                     }
                     prog.body.push({
-                        type: "BinaryCommand",
-                        command: "setxy",
+                        type: COMMAND_TYPES.BINARY_COMMAND,
+                        command: BINARY_COMMANDS.SET_POSITION,
                         x,
                         y,
                     });
-                } else if (tokens[0].value === "arc") {
+                } else if (tokens[0].value === BINARY_COMMANDS.ARC) {
                     let angle, radius;
                     tokens.shift();
                     if (
-                        tokens[0].type !== "number" ||
-                        tokens[1].type !== "number"
+                        tokens[0].type !== TOKEN_TYPES.NUMBER ||
+                        tokens[1].type !== TOKEN_TYPES.NUMBER
                     ) {
                         throw new Error(
                             "Error: arc expects two numbers for angle and radius."
@@ -125,17 +116,17 @@ export function produceAst(tokens) {
                         tokens.splice(0, 2);
                     }
                     prog.body.push({
-                        type: "BinaryCommand",
-                        command: "arc",
+                        type: COMMAND_TYPES.BINARY_COMMAND,
+                        command: BINARY_COMMANDS.ARC,
                         angle,
                         radius,
                     });
-                } else if (tokens[0].value === "random") {
+                } else if (tokens[0].value === BINARY_COMMANDS.RANDOM) {
                     let start, end;
                     tokens.shift();
                     if (
-                        tokens[0].type !== "number" ||
-                        tokens[1].type !== "number"
+                        tokens[0].type !== TOKEN_TYPES.NUMBER ||
+                        tokens[1].type !== TOKEN_TYPES.NUMBER
                     ) {
                         throw new Error(
                             "Error: random expects two numbers for range."
@@ -146,37 +137,37 @@ export function produceAst(tokens) {
                         tokens.splice(0, 2);
                     }
                     prog.body.push({
-                        type: "BinaryCommand",
-                        command: "arc",
+                        type: COMMAND_TYPES.BINARY_COMMAND,
+                        command: BINARY_COMMANDS.RANDOM,
                         start,
                         end,
                     });
                 }
             } else if (UnaryKeywords.includes(tokens[0].value)) {
                 if (
-                    (tokens[0].value === "setpencolor" ||
-                        tokens[0].value === "setfillcolor") &&
-                    tokens[1].type !== "string"
+                    (tokens[0].value === UNARY_COMMANDS.SET_PEN_COLOR ||
+                        tokens[0].value === UNARY_COMMANDS.SET_FILL_COLOR) &&
+                    tokens[1].type !== TOKEN_TYPES.STRING
                 ) {
-                    throw new Error(`Error: setpencolor expects a string.`);
+                    throw new Error(`Error: ${tokens[0].value} expects a string.`);
                 } else if (
-                    tokens[0].value !== "setpencolor" &&
-                    tokens[0].value !== "setfillcolor" &&
-                    tokens[1].type !== "number"
+                    tokens[0].value !== UNARY_COMMANDS.SET_PEN_COLOR &&
+                    tokens[0].value !== UNARY_COMMANDS.SET_FILL_COLOR &&
+                    tokens[1].type !== TOKEN_TYPES.NUMBER
                 ) {
                     throw new Error(
                         `Error: ${tokens[0].value} expects a number.`
                     );
                 }
                 prog.body.push({
-                    type: "UnaryCommand",
+                    type: COMMAND_TYPES.UNARY_COMMAND,
                     command: tokens[0].value,
                     value: tokens[1].value,
                 });
                 tokens.splice(0, 2);
-            } else if (CanvasCommands.includes(tokens[0].value)) {
+            } else if (CanvasKeywords.includes(tokens[0].value)) {
                 prog.body.push({
-                    type: "CanvasCommand",
+                    type: COMMAND_TYPES.CANVAS_COMMAND,
                     command: tokens[0].value,
                 });
                 tokens.shift();
