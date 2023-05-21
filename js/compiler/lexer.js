@@ -42,7 +42,6 @@ export function tokenize(text) {
             });
         } else {
             throw new Error(`Unidentified character ${str[0]}`);
-            break;
         }
     }
     tokens.push({ type: "EOF" });
