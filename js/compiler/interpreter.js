@@ -4,22 +4,25 @@ import { showFillingLoader, hideFillingLoader } from "../index.js";
 const worker = new Worker("/js/compiler/fillWorker.js");
 
 const pointerData = {
-    origX: 0,
-    origY: 0,
-    x: 0,
-    y: 0,
-    angle: 90,
-    origAngle: 90,
+    defaultX: 0,
+    defaultY: 0,
+    defaultAngle: 90,
     pu: false,
 };
 let ctx;
 
 export function executeAst(ast, canvas, pointer) {
     ctx = ctx || canvas.getContext("2d", { willReadFrequently: true });
-    pointerData.origX = Math.floor(canvas.width / 2);
-    pointerData.origY = Math.floor(canvas.height / 2);
-    pointerData.x = pointerData.x || pointerData.origX;
-    pointerData.y = pointerData.y || pointerData.origY;
+    pointerData.defaultX = Math.floor(canvas.width / 2);
+    pointerData.defaultY = Math.floor(canvas.height / 2);
+    pointerData.x =
+        typeof pointerData.x !== "undefined"
+            ? pointerData.x
+            : pointerData.defaultX;
+    pointerData.y =
+        typeof pointerData.y !== "undefined"
+            ? pointerData.y
+            : pointerData.defaultY;
     pointerData.angle =
         typeof pointerData.angle === "undefined" ? 90 : pointerData.angle;
     ctx.beginPath();
@@ -45,18 +48,18 @@ export function executeAst(ast, canvas, pointer) {
                         break;
                     case "seth":
                     case "setheading":
-                        setAngle(pointerData.origAngle - command.value);
+                        setAngle(pointerData.defaultAngle - command.value);
                         break;
                     case "setx":
                         setPosition(
-                            pointerData.origX + command.value,
+                            pointerData.defaultX + command.value,
                             pointerData.y
                         );
                         break;
                     case "sety":
                         setPosition(
                             pointerData.x,
-                            pointerData.origY + command.value
+                            pointerData.defaultY + command.value
                         );
                         break;
                     case "setpencolor":
@@ -82,8 +85,8 @@ export function executeAst(ast, canvas, pointer) {
                     }
                 } else if (command.command === "setxy") {
                     setPosition(
-                        pointerData.origX + command.x,
-                        pointerData.origY - command.y
+                        pointerData.defaultX + command.x,
+                        pointerData.defaultY - command.y
                     );
                 } else if (command.command === "arc") {
                     drawArc(command.angle, command.radius);
@@ -148,10 +151,10 @@ function backward(value) {
 }
 
 function centerTurtle() {
-    pointerData.x = pointerData.origX;
-    pointerData.y = pointerData.origY;
+    pointerData.x = pointerData.defaultX;
+    pointerData.y = pointerData.defaultY;
     ctx.moveTo(pointerData.x, pointerData.y);
-    pointerData.angle = pointerData.origAngle;
+    pointerData.angle = pointerData.defaultAngle;
     updatePointerPosition();
 }
 
@@ -173,9 +176,9 @@ function setPosition(x, y) {
 }
 
 function updatePointerPosition() {
-    const relativeX = pointerData.x - pointerData.origX;
-    const relativeY = pointerData.y - pointerData.origY;
-    const relativeAngle = pointerData.origAngle - pointerData.angle;
+    const relativeX = pointerData.x - pointerData.defaultX;
+    const relativeY = pointerData.y - pointerData.defaultY;
+    const relativeAngle = pointerData.defaultAngle - pointerData.angle;
     pointer.style.transform = `translate(calc(${relativeX}px - 50%), calc(${relativeY}px - 50%)) rotate(${relativeAngle}deg)`;
 }
 
