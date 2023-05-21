@@ -1,4 +1,4 @@
-import { tokenize } from "./lexer.js";
+import Lexer from "./lexer/index.js";
 import { produceAst } from "./parser.js";
 import { executeAst } from "./interpreter.js";
 
@@ -24,11 +24,12 @@ export default class LogoInterpreter {
         container.style.overflow = "hidden";
         this.canvas = container.querySelector("#cnv");
         this.pointer = container.querySelector("#pointer");
+        this.lexer = new Lexer();
     }
 
     runCommand(command) {
         try {
-            const tokens = tokenize(command);
+            const tokens = this.lexer.tokenize(command);
             const ast = produceAst(tokens);
             executeAst(ast, this.canvas, this.pointer);
         } catch (err) {
