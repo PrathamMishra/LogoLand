@@ -11,7 +11,7 @@ main {
     position: relative;
 }
 #right {
-    flex:1;
+    flex: 1;
     display: flex;
 }
 #runBtn {
@@ -41,8 +41,9 @@ h4 {
     height: 50px;
     flex: 1;
 }
-#hideErr::before, #hideErr::after {
-    content: '';
+#hideErr::before,
+#hideErr::after {
+    content: "";
     width: 20px;
     height: 2px;
     background-color: red;
@@ -50,19 +51,19 @@ h4 {
     top: 50%;
     left: 90%;
 }
-#hideErr::before{
+#hideErr::before {
     transform: rotate(45deg);
 }
-#hideErr::after{
+#hideErr::after {
     transform: rotate(135deg);
 }
-#pointer{
+#pointer {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
-#fillingLoader{
+#fillingLoader {
     text-align: center;
     display: none;
     font-size: larger;

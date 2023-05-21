@@ -3,9 +3,12 @@ import { produceAst } from "./parser.js";
 import { executeAst } from "./interpreter.js";
 
 export default class LogoInterpreter {
-    constructor (container, pointerLink = "") {
+    constructor(container, pointerLink = "") {
         // TODO: move this logic and its styling inside a shadowDOM.
-        if (!container) throw new Error("Please provide a canvas to initialize interpreter");
+        if (!container)
+            throw new Error(
+                "Please provide a canvas to initialize interpreter"
+            );
         let canvasHtml, pointerHtml;
         canvasHtml = `<canvas id="cnv" width="1000" height="500"></canvas>`;
         if (pointerLink) {
@@ -23,7 +26,7 @@ export default class LogoInterpreter {
         this.pointer = container.querySelector("#pointer");
     }
 
-    runCommand (command) {
+    runCommand(command) {
         try {
             const tokens = tokenize(command);
             const ast = produceAst(tokens);
@@ -33,7 +36,7 @@ export default class LogoInterpreter {
         }
     }
 
-    onError(callback = ()=>{}) {
+    onError(callback = () => {}) {
         this.errorCallback = callback;
     }
 

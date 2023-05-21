@@ -1,9 +1,9 @@
 function getPixel(imageData, x, y) {
     if (x < 0 || y < 0 || x >= imageData.width || y >= imageData.height) {
-      return [-1, -1, -1, -1];
+        return [-1, -1, -1, -1];
     } else {
-      const offset = (y * imageData.width + x) * 4;
-      return imageData.data.slice(offset, offset + 4);
+        const offset = (y * imageData.width + x) * 4;
+        return imageData.data.slice(offset, offset + 4);
     }
 }
 
@@ -24,10 +24,10 @@ function floodFill(imageData, x, y, fillColor) {
     const targetColor = getPixel(imageData, x, y);
     try {
         if (!colorsMatch(targetColor, fillColor)) {
-            const pixelsToCheck = [{x, y}];
+            const pixelsToCheck = [{ x, y }];
             while (pixelsToCheck.length > 0) {
-                const {x, y} = pixelsToCheck.pop();
-                
+                const { x, y } = pixelsToCheck.pop();
+
                 const currentColor = getPixel(imageData, x, y);
                 if (
                     !visited[y * imageData.width + x] &&
@@ -35,20 +35,20 @@ function floodFill(imageData, x, y, fillColor) {
                 ) {
                     setPixel(imageData, x, y, fillColor);
                     visited[y * imageData.width + x] = 1;
-                    pixelsToCheck.push({x: x + 1, y});
-                    pixelsToCheck.push({x: x - 1, y});
-                    pixelsToCheck.push({x, y:  y + 1});
-                    pixelsToCheck.push({x, y: y - 1});
+                    pixelsToCheck.push({ x: x + 1, y });
+                    pixelsToCheck.push({ x: x - 1, y });
+                    pixelsToCheck.push({ x, y: y + 1 });
+                    pixelsToCheck.push({ x, y: y - 1 });
                 }
             }
         }
-    } catch(e) {
+    } catch (e) {
         console.error(e);
     }
 }
-  
+
 self.onmessage = (e) => {
-    const {x, y, fillColor, imageData} = e.data;
-    floodFill(imageData, x, y, fillColor);  
+    const { x, y, fillColor, imageData } = e.data;
+    floodFill(imageData, x, y, fillColor);
     self.postMessage(imageData);
 };

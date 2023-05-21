@@ -19,14 +19,14 @@ runBtn.addEventListener("click", () => {
     interpreter.runCommand(text);
 });
 
-hideErr.addEventListener('click', () => {
+hideErr.addEventListener("click", () => {
     errorBlock.style.display = "none";
 });
 
-// Utils 
+// Utils
 interpreter.onError(function showError(err) {
-    error.innerText=err;
-    errorBlock.style.display="flex";
+    error.innerText = err;
+    errorBlock.style.display = "flex";
 });
 
 export function showFillingLoader() {

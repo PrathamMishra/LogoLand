@@ -10,7 +10,7 @@ const pointerData = {
     y: 0,
     angle: 90,
     origAngle: 90,
-    pu: false
+    pu: false,
 };
 let ctx;
 
@@ -19,8 +19,9 @@ export function executeAst(ast, canvas, pointer) {
     pointerData.origX = Math.floor(canvas.width / 2);
     pointerData.origY = Math.floor(canvas.height / 2);
     pointerData.x = pointerData.x || pointerData.origX;
-    pointerData.y = pointerData.y || pointerData.origY; 
-    pointerData.angle =  typeof pointerData.angle === "undefined" ? 90 : pointerData.angle;
+    pointerData.y = pointerData.y || pointerData.origY;
+    pointerData.angle =
+        typeof pointerData.angle === "undefined" ? 90 : pointerData.angle;
     ctx.beginPath();
     ctx.moveTo(pointerData.x, pointerData.y);
     updatePointerPosition();
@@ -37,53 +38,58 @@ export function executeAst(ast, canvas, pointer) {
                         backward(command.value);
                         break;
                     case "rt":
-                        setAngle(pointerData.angle-command.value);
+                        setAngle(pointerData.angle - command.value);
                         break;
                     case "lt":
-                        setAngle(pointerData.angle+command.value);
-                        break; 
+                        setAngle(pointerData.angle + command.value);
+                        break;
                     case "seth":
                     case "setheading":
                         setAngle(pointerData.origAngle - command.value);
                         break;
                     case "setx":
-                        setPosition(pointerData.origX + command.value, pointerData.y);
+                        setPosition(
+                            pointerData.origX + command.value,
+                            pointerData.y
+                        );
                         break;
                     case "sety":
-                        setPosition(pointerData.x, pointerData.origY + command.value);
+                        setPosition(
+                            pointerData.x,
+                            pointerData.origY + command.value
+                        );
                         break;
                     case "setpencolor":
                         if (isValidColor(command.value)) {
                             ctx.strokeStyle = command.value;
                         } else {
-                            throw new Error("Error: Invalid color name.")
+                            throw new Error("Error: Invalid color name.");
                         }
                         break;
                     case "setfillcolor":
                         if (isValidColor(command.value)) {
                             ctx.fillStyle = command.value;
                         } else {
-                            throw new Error("Error: Invalid color name.")
+                            throw new Error("Error: Invalid color name.");
                         }
                         break;
                 }
-            }
-            else if (command.type === "BinaryCommand") {
+            } else if (command.type === "BinaryCommand") {
                 if (command.command === "repeat") {
                     while (command.iterations--) {
                         const copy = JSON.parse(JSON.stringify(command));
                         executeAst(copy.subProg, canvas, pointer);
                     }
-                }
-                else if (command.command === "setxy") {
-                    setPosition(pointerData.origX + command.x, pointerData.origY - command.y);
-                }
-                else if (command.command === "arc") {
+                } else if (command.command === "setxy") {
+                    setPosition(
+                        pointerData.origX + command.x,
+                        pointerData.origY - command.y
+                    );
+                } else if (command.command === "arc") {
                     drawArc(command.angle, command.radius);
                 }
                 // TODO: IMPLEMENT random.
-            }
-            else if (command.type === "CanvasCommand") {
+            } else if (command.type === "CanvasCommand") {
                 switch (command.command) {
                     case "home":
                         centerTurtle();
@@ -92,20 +98,20 @@ export function executeAst(ast, canvas, pointer) {
                         clearScreen();
                         break;
                     case "pu":
-                        pointerData.pu=true;
+                        pointerData.pu = true;
                         break;
                     case "pd":
-                        pointerData.pu=false;
-                        break; 
+                        pointerData.pu = false;
+                        break;
                     case "ht":
                         pointer.style.visibility = "hidden";
                         break;
                     case "st":
                         pointer.style.visibility = "visible";
-                        break; 
+                        break;
                     case "fill":
                         floodFillWithWorker();
-                        break; 
+                        break;
                 }
             }
             statements.shift();
@@ -116,32 +122,32 @@ export function executeAst(ast, canvas, pointer) {
 function isValidColor(strColor) {
     var s = new Option().style;
     s.color = strColor;
-  
+
     // return 'false' if color wasn't assigned
     return s.color == strColor.toLowerCase();
 }
 
 // Move this inside a canvas handler class
 function convertToRadians(deg) {
-    const rad = Math.PI * deg / 180;
+    const rad = (Math.PI * deg) / 180;
     return rad;
 }
 
 function forward(value) {
-    pointerData.x += value*Math.cos(convertToRadians(pointerData.angle));
-    pointerData.y -= value*Math.sin(convertToRadians(pointerData.angle));
+    pointerData.x += value * Math.cos(convertToRadians(pointerData.angle));
+    pointerData.y -= value * Math.sin(convertToRadians(pointerData.angle));
     moveTurtle();
     updatePointerPosition();
 }
 
 function backward(value) {
-    pointerData.x -= value*Math.cos(convertToRadians(pointerData.angle));
-    pointerData.y += value*Math.sin(convertToRadians(pointerData.angle));
+    pointerData.x -= value * Math.cos(convertToRadians(pointerData.angle));
+    pointerData.y += value * Math.sin(convertToRadians(pointerData.angle));
     moveTurtle();
     updatePointerPosition();
 }
 
-function centerTurtle(){
+function centerTurtle() {
     pointerData.x = pointerData.origX;
     pointerData.y = pointerData.origY;
     ctx.moveTo(pointerData.x, pointerData.y);
@@ -176,8 +182,7 @@ function updatePointerPosition() {
 function moveTurtle() {
     if (pointerData.pu) {
         ctx.moveTo(pointerData.x, pointerData.y);
-    } 
-    else {
+    } else {
         ctx.lineTo(pointerData.x, pointerData.y);
         ctx.stroke();
     }
@@ -185,7 +190,13 @@ function moveTurtle() {
 
 function drawArc(angle, radius) {
     ctx.beginPath();
-    ctx.arc(pointerData.x, pointerData.y, radius, convertToRadians(-1*pointerData.angle), convertToRadians(angle-pointerData.angle));
+    ctx.arc(
+        pointerData.x,
+        pointerData.y,
+        radius,
+        convertToRadians(-1 * pointerData.angle),
+        convertToRadians(angle - pointerData.angle)
+    );
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(pointerData.x, pointerData.y);
@@ -202,10 +213,20 @@ worker.onmessage = (e) => {
 
 function floodFillWithWorker() {
     // read the pixels in the canvas
-    const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    const imageData = ctx.getImageData(
+        0,
+        0,
+        ctx.canvas.width,
+        ctx.canvas.height
+    );
     showFillingLoader();
     // send them over to the worker to fill
-    worker.postMessage({x: Math.floor(pointerData.x), y: Math.floor(pointerData.y), fillColor: hexToRGB(ctx.fillStyle), imageData});
+    worker.postMessage({
+        x: Math.floor(pointerData.x),
+        y: Math.floor(pointerData.y),
+        fillColor: hexToRGB(ctx.fillStyle),
+        imageData,
+    });
 }
 
 function hexToRGB(hex) {
