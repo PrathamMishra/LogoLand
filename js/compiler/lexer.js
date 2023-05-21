@@ -1,4 +1,4 @@
-import { TOKEN_TYPES } from "./constants";
+import { TOKEN_TYPES } from "./constants.js";
 
 export function tokenize(text) {
     const str = text.split(""),
@@ -69,8 +69,8 @@ function isReserved(token) {
         "cs",
         "pd",
         "pu",
-        "ht",
-        "st",
+        "hp",
+        "sp",
         "fill",
         // Unary commands
         "fd",

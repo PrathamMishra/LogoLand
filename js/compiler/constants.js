@@ -7,15 +7,14 @@ export const TOKEN_TYPES = {
     IDENTIFIER: "identifier",
 };
 
-export const NODE_TYPES = {
-    PROGRAM: "program",
-    ...COMMAND_TYPES
-};
-
 export const COMMAND_TYPES = {
     UNARY_COMMAND: "UnaryCommand",
     CANVAS_COMMAND: "CanvasCommand",
     BINARY_COMMAND: "BinaryCommand",
+};
+
+export const NODE_TYPES = {
+    PROGRAM: "program"
 };
 
 export const UNARY_COMMANDS = {

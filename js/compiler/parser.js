@@ -1,4 +1,4 @@
-import { BINARY_COMMANDS, CANVAS_COMMANDS, COMMAND_TYPES, NODE_TYPES, TOKEN_TYPES, UNARY_COMMANDS } from "./constants";
+import { BINARY_COMMANDS, CANVAS_COMMANDS, COMMAND_TYPES, NODE_TYPES, TOKEN_TYPES, UNARY_COMMANDS } from "./constants.js";
 
 const UnaryKeywords = Object.values(UNARY_COMMANDS),
     CanvasKeywords = Object.values(CANVAS_COMMANDS),
