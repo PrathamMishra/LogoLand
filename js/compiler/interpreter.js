@@ -9,6 +9,7 @@ const pointerData = {
     x: 0,
     y: 0,
     angle: 90,
+    origAngle: 90,
     pu: false
 };
 let ctx;
@@ -22,7 +23,7 @@ export function executeAst(ast, canvas, pointer) {
     pointerData.angle =  typeof pointerData.angle === "undefined" ? 90 : pointerData.angle;
     ctx.beginPath();
     ctx.moveTo(pointerData.x, pointerData.y);
-    updateTurtlePosition();
+    updatePointerPosition();
     if (ast.type === "program") {
         const statements = ast.body;
         while (statements.length) {
@@ -43,19 +44,13 @@ export function executeAst(ast, canvas, pointer) {
                         break; 
                     case "seth":
                     case "setheading":
-                        setAngle(90 - command.value);
+                        setAngle(pointerData.origAngle - command.value);
                         break;
                     case "setx":
-                        // TODO : move this to a function
-                        pointerData.x = pointerData.origX + command.value;
-                        moveTurtle();
-                        updateTurtlePosition();
+                        setPosition(pointerData.origX + command.value, pointerData.y);
                         break;
                     case "sety":
-                        // TODO : move this to a function
-                        pointerData.y = pointerData.origY + command.value;
-                        moveTurtle();
-                        updateTurtlePosition();
+                        setPosition(pointerData.x, pointerData.origY + command.value);
                         break;
                     case "setpencolor":
                         if (isValidColor(command.value)) {
@@ -81,10 +76,7 @@ export function executeAst(ast, canvas, pointer) {
                     }
                 }
                 else if (command.command === "setxy") {
-                    pointerData.x = pointerData.origX + command.x;
-                    pointerData.y = pointerData.origY - command.y;
-                    moveTurtle();
-                    updateTurtlePosition();
+                    setPosition(pointerData.origX + command.x, pointerData.origY - command.y);
                 }
                 else if (command.command === "arc") {
                     drawArc(command.angle, command.radius);
@@ -139,38 +131,45 @@ function forward(value) {
     pointerData.x += value*Math.cos(convertToRadians(pointerData.angle));
     pointerData.y -= value*Math.sin(convertToRadians(pointerData.angle));
     moveTurtle();
-    updateTurtlePosition();
+    updatePointerPosition();
 }
 
 function backward(value) {
     pointerData.x -= value*Math.cos(convertToRadians(pointerData.angle));
     pointerData.y += value*Math.sin(convertToRadians(pointerData.angle));
     moveTurtle();
-    updateTurtlePosition();
+    updatePointerPosition();
 }
 
 function centerTurtle(){
     pointerData.x = pointerData.origX;
     pointerData.y = pointerData.origY;
     ctx.moveTo(pointerData.x, pointerData.y);
-    updateTurtlePosition();
-    setAngle(90);
+    pointerData.angle = pointerData.origAngle;
+    updatePointerPosition();
 }
 
 function clearScreen() {
-    ctx.clearRect(0,0,1000,500);
     centerTurtle();
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
 function setAngle(angle) {
     pointerData.angle = angle;
-    pointer.style.transform = `translate(calc(${pointerData.x-pointerData.origX}px - 50%), calc(${pointerData.y-pointerData.origY}px - 50%)) rotate(${90-pointerData.angle}deg)`;
+    updatePointerPosition();
 }
 
-function updateTurtlePosition() {
+function setPosition(x, y) {
+    pointerData.x = x;
+    pointerData.y = y;
+    moveTurtle();
+    updatePointerPosition();
+}
+
+function updatePointerPosition() {
     const relativeX = pointerData.x - pointerData.origX;
     const relativeY = pointerData.y - pointerData.origY;
-    const relativeAngle = 90 - pointerData.angle;
+    const relativeAngle = pointerData.origAngle - pointerData.angle;
     pointer.style.transform = `translate(calc(${relativeX}px - 50%), calc(${relativeY}px - 50%)) rotate(${relativeAngle}deg)`;
 }
 
