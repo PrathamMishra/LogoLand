@@ -2,7 +2,7 @@ import { showFillingLoader, hideFillingLoader } from "../index.js";
 import { BINARY_COMMANDS, CANVAS_COMMANDS, COMMAND_TYPES, UNARY_COMMANDS } from "./constants.js";
 
 // setup worker.
-const worker = new Worker("/js/compiler/fillWorker.js");
+const worker = new Worker("/js/compiler/worker/fillWorker.js");
 
 const pointerData = {
     defaultX: 0,
