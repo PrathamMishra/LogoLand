@@ -13,8 +13,11 @@ export function tokenize(text) {
                 str.shift();
             }
             // Add logic for showing bug when "." is encountered
-            if (str[0] === ".") {
-                throw new Error("Error: Decimals are not supported.");
+            if (str.length) {
+                if (str[0] === ".") {
+                    throw new Error("Error: Decimals are not supported.")
+                }
+                throw new Error("Error: Number is incorrect.");
             }
             tokens.push({ type: TOKEN_TYPES.NUMBER, value: Number(num) });
         } else if (isChar(str[0])) {
