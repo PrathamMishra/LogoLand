@@ -1,6 +1,7 @@
 import Lexer from "./lexer/index.js";
 import { produceAst } from "./parser.js";
-import { executeAst } from "./interpreter.js";
+import Interpreter from "./interpreter/index.js";
+import CanvasHandler from "./canvasHandler/index.js";
 
 export default class LogoInterpreter {
     constructor(container, canvasData = {width: 1000, height: 500}, pointerData = {pointerLink: "", width: 15, height: 15}) {
@@ -22,16 +23,16 @@ export default class LogoInterpreter {
         container.innerHTML = canvasHtml + pointerHtml;
         container.style.position = "relative";
         container.style.overflow = "hidden";
-        this.canvas = container.querySelector("#cnv");
-        this.pointer = container.querySelector("#pointer");
+        this.canvasHandler = new CanvasHandler(container.querySelector("#cnv"), container.querySelector("#pointer"));
         this.lexer = new Lexer();
+        this.interpreter = new Interpreter(this.canvasHandler);
     }
 
     runCommand(command) {
         try {
             const tokens = this.lexer.tokenize(command);
             const ast = produceAst(tokens);
-            executeAst(ast, this.canvas, this.pointer);
+            this.interpreter.executeAst(ast);
         } catch (err) {
             this.throwError(err.message);
         }

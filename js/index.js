@@ -23,7 +23,6 @@ hideErr.addEventListener("click", () => {
     errorBlock.style.display = "none";
 });
 
-// Utils
 interpreter.onError(function showError(err) {
     error.innerText = err;
     errorBlock.style.display = "flex";

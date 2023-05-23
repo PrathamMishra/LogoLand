@@ -18,8 +18,9 @@ class Lexer {
                 if (str.length) {
                     if (str[0] === ".") {
                         throw new Error("Error: Decimals are not supported.");
+                    } else if (!lexerUtils.canSkip(str[0])) {
+                        throw new Error("Error: Number is incorrect.");
                     }
-                    throw new Error("Error: Number is incorrect.");
                 }
                 tokens.push({ type: TOKEN_TYPES.NUMBER, value: Number(num) });
             } else if (lexerUtils.isChar(str[0])) {

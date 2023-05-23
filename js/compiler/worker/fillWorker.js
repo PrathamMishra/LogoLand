@@ -1,3 +1,5 @@
+import { WORKER_MESSAGES } from "../constants.js";
+
 function getPixel(imageData, x, y) {
     if (x < 0 || y < 0 || x >= imageData.width || y >= imageData.height) {
         return [-1, -1, -1, -1];
@@ -48,7 +50,18 @@ function floodFill(imageData, x, y, fillColor) {
 }
 
 self.onmessage = (e) => {
-    const { x, y, fillColor, imageData } = e.data;
-    floodFill(imageData, x, y, fillColor);
-    self.postMessage(imageData);
+    switch (e.data.message) {
+        case WORKER_MESSAGES.FILL_REGION: {
+            const { x, y, fillColor, imageData } = e.data.data;
+            floodFill(imageData, x, y, fillColor);
+            self.postMessage({
+                message: WORKER_MESSAGES.FILL_REGION,
+                imageData,
+            });
+            break;
+        }
+        default: {
+            console.log("Unknown message recieved on worker.");
+        }
+    }
 };

@@ -45,3 +45,7 @@ export const CANVAS_COMMANDS = {
     SHOW_POINTER: "sp",
     FILL_REGION: "fill",
 };
+
+export const WORKER_MESSAGES = {
+    FILL_REGION: "fillRegion"
+};
