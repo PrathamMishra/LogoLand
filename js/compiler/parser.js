@@ -4,6 +4,7 @@ const UnaryKeywords = Object.values(UNARY_COMMANDS),
     CanvasKeywords = Object.values(CANVAS_COMMANDS),
     BinaryKeywords = Object.values(BINARY_COMMANDS);
 
+// TODO: break down parser logic and move it to its own class
 export function produceAst(tokens) {
     const prog = {
         type: NODE_TYPES.PROGRAM,
